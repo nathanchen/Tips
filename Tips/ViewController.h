@@ -7,9 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TableViewCell.h"
+#import "Result.h"
+#import "Strings.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <UITextFieldDelegate>
 
+@property (weak, nonatomic) IBOutlet UITextField *moneyTextField;
+@property (weak, nonatomic) IBOutlet UITableView *detailTableView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *moneyTextFieldTopConstraint;
 
 @end
 
