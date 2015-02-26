@@ -8,8 +8,8 @@
 
 #import "QueryPageViewController.h"
 
-const int billAmountTextField_top_constraint_starting_point = 212;
-const int billAmountTextField_top_constraint_ending_point = 164;
+const int billAmountTextField_top_constraint_starting_point = 180;
+const int billAmountTextField_top_constraint_ending_point = 122;
 
 @interface QueryPageViewController ()
 {
@@ -28,6 +28,7 @@ const int billAmountTextField_top_constraint_ending_point = 164;
     
 //    _selectSplitView.hidden = YES;
     billAmount = @"";
+    _selectSplitViewContainer.layer.transform = CATransform3DMakeRotation(M_PI, 1, 0, 0);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -74,6 +75,14 @@ const int billAmountTextField_top_constraint_ending_point = 164;
                          completion:^(BOOL finished){
                              _billAmountTextField.text = [NSString stringWithFormat:@"Bill Amount: \t %@", billAmount];
                              _selectSplitView.hidden = NO;
+                             
+                             [UIView transitionWithView:_selectSplitViewContainer
+                                               duration:1
+                                                options:UIViewAnimationOptionTransitionFlipFromTop
+                                             animations:^{
+                                                 _selectSplitViewContainer.layer.transform = CATransform3DMakeRotation(0, 1, 0, 0);
+                                             } completion:nil];
+
                          }];
     }
 }
@@ -86,6 +95,20 @@ const int billAmountTextField_top_constraint_ending_point = 164;
         billAmountTextFieldTopConstraint.constant = billAmountTextField_top_constraint_starting_point;
         _selectSplitView.hidden = YES;
     }
+}
+
+CA_EXTERN CATransform3D CATransform3DMakePerspective(CGPoint center, float disZ)
+{
+    CATransform3D transToCenter = CATransform3DMakeTranslation(-center.x, -center.y, 0);
+    CATransform3D transBack = CATransform3DMakeTranslation(center.x, center.y, 0);
+    CATransform3D scale = CATransform3DIdentity;
+    scale.m34 = -1.0f/disZ;
+    return CATransform3DConcat(CATransform3DConcat(transToCenter, scale), transBack);
+}
+
+CA_EXTERN CATransform3D CATransform3DPerspect(CATransform3D t, CGPoint center, float disZ)
+{
+    return CATransform3DConcat(t, CATransform3DMakePerspective(center, disZ));
 }
 
 #pragma mark - supporting methods
