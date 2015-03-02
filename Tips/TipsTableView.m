@@ -14,12 +14,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
 {
     NSMutableArray *results;
     float _billAmount;
+    ResultPageViewController *resultPageViewController;
+    BOOL isFirstTime;
 }
 
 - (instancetype)initWithBillAmount: (float)billAmount
 {
     self = [super init];
+    resultPageViewController = [[ResultPageViewController alloc] init];
     _billAmount = billAmount;
+    _tipsPercentage = DEFAULT_TIPS_PERCENTAGE;
+    isFirstTime = YES;
     results = [[NSMutableArray alloc] init];
     [self calculateTips];
     
@@ -55,29 +60,27 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     TipsTableViewCell *cell = (TipsTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    cell.backgroundColor = [UIColor colorWithRed:51/255.0 green:73/255.0 blue:95/255.0 alpha:1];
     
     Result *result = results[indexPath.row];
     
     cell.tipsPercentage.text = [NSString stringWithFormat:@"%ld%%", (long)indexPath.row + 1];
-    cell.tipsAmount.text = [NSString stringWithFormat:@"%0.02f", result.tipsAmount];
-    cell.totalAmount.text = [NSString stringWithFormat:@"%0.02f", result.totalAmount];
+    cell.tipsAmount.text = [NSString stringWithFormat:@"%.02f", result.tipsAmount];
+    cell.totalAmount.text = [NSString stringWithFormat:@"%.02f", result.totalAmount];
     
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return tipsTableViewHeightRatio * [[UIScreen mainScreen] bounds].size.height * 0.22;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return tipsTableViewHeightRatio * [[UIScreen mainScreen] bounds].size.height * 0.12;
+    return tipsTableViewHeightRatio * DEVICE_HEIGHT * tipsTableViewCellHeightRatio;
 }
 
 #pragma mark - table view delegate methods
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    _tipsPercentage = indexPath.row / 100;
+        [resultPageViewController updateValueLabels];
     
 }
 

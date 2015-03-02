@@ -11,10 +11,17 @@
 
 @interface Layout : NSObject
 
-- (void)setLabel:(UILabel *)label
++ (void)setLabel:(UILabel *)label
         withText:(NSString *)text
         fontSize:(float)fontSize
        textColor:(UIColor *)textColor
           isBold:(BOOL)isBold;
+
++ (UILabel *)setUpLabelWithFrame: (CGRect)frame
+                            text: (NSString *)textString
+                       textColor: (UIColor *)color
+                        textFont: (float)fontSize
+                   textAlignment: (NSTextAlignment)textAlignment
+                          isBold: (BOOL)isBold;
 
 @end

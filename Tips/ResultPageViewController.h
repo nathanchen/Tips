@@ -9,10 +9,15 @@
 #import "Masonry.h"
 #import "TipsTableView.h"
 #import "LayoutSpecs.h"
+#import "LayoutResultPageViewValueLabels.h"
 
 @interface ResultPageViewController : UIViewController
 
-@property (nonatomic) NSInteger partySize;
+@property (nonatomic, strong) LayoutResultPageViewValueLabels *layoutResultPageViewValueLabels;
+
 @property (nonatomic) float billAmount;
+@property (nonatomic) int partySize;
+
+- (void)updateValueLabels;
 
 @end

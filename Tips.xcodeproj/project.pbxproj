@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B6E010F6B9AF31A3D7C8F33D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C0C7B29CC67E3B426EE73A0D /* libPods.a */; };
+		C5005ADC1AA436EB00C95B03 /* LayoutResultPageViewValueLabels.m in Sources */ = {isa = PBXBuildFile; fileRef = C5005ADB1AA436EB00C95B03 /* LayoutResultPageViewValueLabels.m */; };
 		C56497F31AA045750096B7ED /* TipsTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = C56497F21AA045750096B7ED /* TipsTableView.m */; };
 		C56497F61AA047170096B7ED /* Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = C56497F51AA047170096B7ED /* Layout.m */; };
 		C56497F91AA048CD0096B7ED /* TipsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C56497F81AA048CD0096B7ED /* TipsTableViewCell.m */; };
@@ -37,6 +38,8 @@
 /* Begin PBXFileReference section */
 		11E4A4D1AC198EED1CB4319B /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		C0C7B29CC67E3B426EE73A0D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C5005ADA1AA436EB00C95B03 /* LayoutResultPageViewValueLabels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayoutResultPageViewValueLabels.h; sourceTree = "<group>"; };
+		C5005ADB1AA436EB00C95B03 /* LayoutResultPageViewValueLabels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayoutResultPageViewValueLabels.m; sourceTree = "<group>"; };
 		C56497F11AA045750096B7ED /* TipsTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TipsTableView.h; sourceTree = "<group>"; };
 		C56497F21AA045750096B7ED /* TipsTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TipsTableView.m; sourceTree = "<group>"; };
 		C56497F41AA047170096B7ED /* Layout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layout.h; sourceTree = "<group>"; };
@@ -146,6 +149,8 @@
 				C56497F21AA045750096B7ED /* TipsTableView.m */,
 				C56497F71AA048CD0096B7ED /* TipsTableViewCell.h */,
 				C56497F81AA048CD0096B7ED /* TipsTableViewCell.m */,
+				C5005ADA1AA436EB00C95B03 /* LayoutResultPageViewValueLabels.h */,
+				C5005ADB1AA436EB00C95B03 /* LayoutResultPageViewValueLabels.m */,
 				C56497FA1AA049F70096B7ED /* utils */,
 				C5E32F271A937CD500EB9D74 /* Supporting Files */,
 			);
@@ -327,6 +332,7 @@
 				C5E32F5E1A938CEF00EB9D74 /* Strings.m in Sources */,
 				C5E32F2D1A937CD500EB9D74 /* AppDelegate.m in Sources */,
 				C56497F31AA045750096B7ED /* TipsTableView.m in Sources */,
+				C5005ADC1AA436EB00C95B03 /* LayoutResultPageViewValueLabels.m in Sources */,
 				C5E32F4F1A9381EC00EB9D74 /* Result.m in Sources */,
 				C5E32F2A1A937CD500EB9D74 /* main.m in Sources */,
 				C5E32F9A1A9A386D00EB9D74 /* QueryPageViewController.m in Sources */,

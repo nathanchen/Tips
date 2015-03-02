@@ -20,16 +20,16 @@ const float totalAmountLabelWidthRatio = 0.4;
     if (self)
     {
         CGSize size = self.frame.size;
-        
-        _tipsPercentage = [[UILabel alloc] initWithFrame:CGRectMake(30, 10, 50, 20)];
-        _tipsAmount = [[UILabel alloc] initWithFrame:CGRectMake(100, 10, 100, 20)];
-        _totalAmount = [[UILabel alloc] initWithFrame:CGRectMake(220, 10, 100, 20)];
+        float labelHeight = size.height / 2;
+
+        _tipsPercentage = [Layout setUpLabelWithFrame:CGRectMake(30, labelHeight, 50, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
+        _tipsAmount = [Layout setUpLabelWithFrame:CGRectMake(120, labelHeight, 100, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
+        _totalAmount = [Layout setUpLabelWithFrame:CGRectMake(260, labelHeight, 100, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
         
         [self.contentView addSubview:_tipsPercentage];
         [self.contentView addSubview:_tipsAmount];
         [self.contentView addSubview:_totalAmount];
-        
-        [self colorLabels];
+//        [self colorLabels];
     }
     return self;
 }

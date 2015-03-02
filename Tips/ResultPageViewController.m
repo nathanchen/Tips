@@ -12,9 +12,9 @@
 {
     UIView *superview;
     UIView *billDetailView;
-    UIImageView *billDetailViewVerticalSplitOne;
-    UIImageView *billDetailViewVerticalSplitTwo;
-    UIImageView *billDetailViewHorizontalSplit;
+    UIView *billDetailViewVerticalSplitOne;
+    UIView *billDetailViewVerticalSplitTwo;
+    UIView *billDetailViewHorizontalSplit;
     UILabel *billAmountLabel;
     UILabel *partySizeLabel;
     UILabel *tipsLabel;
@@ -26,14 +26,14 @@
     UILabel *totalValueLabel;
     
     UIView *paymentForEachView;
-    UILabel *paymentForEachLabel;
+    UILabel *paymentForEachValueLabel;
     UILabel *eachLabel;
     UIButton *roundButton;
     
     TipsTableView *tipsTableView;
     NSMutableArray *results;
     
-    Layout *layout;
+    UIView *tableHeaderView;
 }
 
 @end
@@ -45,41 +45,82 @@
     
     // Do any additional setup after loading the view.
     superview = self.view;
-    [superview setBackgroundColor:[UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:1]];
+    [superview setBackgroundColor:[UIColor colorWithRed:118/255.0 green:190/255.0 blue:242/255.0 alpha:1]];
+    
+    _layoutResultPageViewValueLabels = [LayoutResultPageViewValueLabels sharedInstanceWithBillAmountValueLabel:<#(UILabel *)#> partySizeValueLabel:<#(UILabel *)#> tipsValueLabel:<#(UILabel *)#> totalValueLabel:<#(UILabel *)#> eachPaysValueLabel:<#(UILabel *)#>];
+    _layoutResultPageViewValueLabels.superview = superview;
     
     results = [[NSMutableArray alloc] init];
-    layout = [[Layout alloc] init];
     _billAmount = 120;
+    _partySize = 2;
     
     [self layoutBillDetailView];
     [self layoutBillDetailViewVerticalSplitOne];
     [self layoutBillDetailViewVerticalSplitTwo];
     [self layoutBillDetailViewHorizontalSplit];
     
+    _layoutResultPageViewValueLabels.billDetailView = billDetailView;
+    
+    [self layoutTipsTableView];
+    [self updateTipsTableView];
+    [self layoutTableHeaderView];
+    
     [self layoutBillAmountLabel];
     [self layoutTipsLabel];
     [self layoutPartySizeLabel];
     [self layoutTotalLabel];
-    
-    [self layoutBillAmountValueLabel];
-    [self layoutPartySizeValueLabel];
-    [self layoutTipsValueLabel];
-    [self layoutTotalValueLabel];
-    
     [self layoutPaymentForEachView];
-    [self layoutPaymentForEachLabel];
-    [self layoutEachLabel];
+    
+    _layoutResultPageViewValueLabels.paymentForEachView = paymentForEachView;
+    
     [self layoutRoundButton];
     
-    [self layoutTipsTableView];
-    [self updateTipsTableView];
-    
+    [self setupValueLabels];
+    [self updateValueLabels];
+    [self layoutEachLabel];
+
 //    [self colorLabels];
+}
+
+- (void)setupValueLabels
+{
+    billAmountValueLabel = UILabel.new;
+    partySizeValueLabel = UILabel.new;
+    tipsValueLabel = UILabel.new;
+    totalValueLabel = UILabel.new;
+    
+    paymentForEachValueLabel = UILabel.new;
+}
+
+- (void)updateValueLabels
+{
+    float tipsPercentage = tipsTableView.tipsPercentage;
+    float total = _billAmount * (1 + tipsPercentage);
+    float eachPays = total / _partySize;
+    
+}
+
+- (void)updateValueLabelsWithBillAmount: (float)billAmount
+                              partySize: (int)partySize
+                         tipsPercentage: (float)tipsPercentage
+                                  total: (float)total
+                               eachPays: (float)eachPays
+{
+    [_layoutResultPageViewValueLabels layoutBillAmountValueLabel:billAmountValueLabel withValue:[NSString stringWithFormat:@"%.02f", billAmount]];
+    
+    [_layoutResultPageViewValueLabels layoutPartySizeValueLabel:partySizeValueLabel withValue:[NSString stringWithFormat:@"%d", partySize]];
+    
+    [_layoutResultPageViewValueLabels layoutTipsValueLabel:tipsValueLabel withValue:[NSString stringWithFormat:@"%.02f", billAmount * tipsPercentage]];
+    
+    [_layoutResultPageViewValueLabels layoutTotalValueLabel:totalValueLabel withValue:[NSString stringWithFormat:@"%.02f", total]];
+    
+    [_layoutResultPageViewValueLabels layoutPaymentForEachLabel:paymentForEachValueLabel withValue:[NSString stringWithFormat:@"%.02f", eachPays]];
 }
 
 - (void)updateTipsTableView
 {
     [tipsTableView reloadData];
+    [tipsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:10 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
 }
 
 - (void)layoutBillDetailView
@@ -89,43 +130,43 @@
     
     [billDetailView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(@DEVICE_WIDTH);
-        make.height.equalTo([NSNumber numberWithInt:billDetailViewHeight]);
+        make.height.equalTo([NSNumber numberWithFloat:(billDetailViewHeightRatio * DEVICE_HEIGHT)]);
         make.top.equalTo([NSNumber numberWithInt:billDetailViewMarginTop]);
     }];
 }
 
 - (void)layoutBillDetailViewVerticalSplitOne
 {
-    billDetailViewVerticalSplitOne = UIImageView.new;
-    [billDetailViewVerticalSplitOne setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"resultPageHeaderVerticalSplit"]]];
+    billDetailViewVerticalSplitOne = UIView.new;
+    [billDetailViewVerticalSplitOne setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.3]];
     [superview addSubview:billDetailViewVerticalSplitOne];
     
     [billDetailViewVerticalSplitOne mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo([NSNumber numberWithInt:billDetailViewVerticalSplitOneHeight]);
+        make.height.equalTo([NSNumber numberWithFloat:(billDetailViewVerticalSplitOneHeightRatio * DEVICE_HEIGHT)]);
         make.width.equalTo([NSNumber numberWithInt:billDetailViewVerticalSplitOneWidth]);
-        make.centerY.equalTo(billDetailView.mas_top).offset(billDetailViewVerticalSplitOneCenterY);
+        make.centerY.equalTo(billDetailView.mas_top).offset(billDetailViewVerticalSplitOneCenterYRatio * DEVICE_HEIGHT);
         make.left.equalTo(billDetailView.mas_left).offset(DEVICE_WIDTH / 2);
     }];
 }
 
 - (void)layoutBillDetailViewVerticalSplitTwo
 {
-    billDetailViewVerticalSplitTwo = UIImageView.new;
-    [billDetailViewVerticalSplitTwo setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"resultPageHeaderVerticalSplit"]]];
+    billDetailViewVerticalSplitTwo = UIView.new;
+    [billDetailViewVerticalSplitTwo setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.3]];
     [superview addSubview:billDetailViewVerticalSplitTwo];
     
     [billDetailViewVerticalSplitTwo mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo([NSNumber numberWithInt:billDetailViewVerticalSplitTwoHeight]);
+        make.height.equalTo([NSNumber numberWithFloat:(billDetailViewVerticalSplitTwoHeightRatio * DEVICE_HEIGHT)]);
         make.width.equalTo([NSNumber numberWithInt:billDetailViewVerticalSplitTwoWidth]);
-        make.centerY.equalTo(billDetailView.mas_top).offset(billDetailViewVerticalSplitTwoCenterY);
+        make.centerY.equalTo(billDetailView.mas_top).offset(billDetailViewVerticalSplitTwoCenterYRatio * DEVICE_HEIGHT);
         make.left.equalTo(billDetailView.mas_left).offset(DEVICE_WIDTH / 2);
     }];
 }
 
 - (void)layoutBillDetailViewHorizontalSplit
 {
-    billDetailViewHorizontalSplit = UIImageView.new;
-    [billDetailViewHorizontalSplit setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"resultPageHeaderHorizontalSplit"]]];
+    billDetailViewHorizontalSplit = UIView.new;
+    [billDetailViewHorizontalSplit setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.3]];
     [superview addSubview:billDetailViewHorizontalSplit];
     
     [billDetailViewHorizontalSplit mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -138,151 +179,86 @@
 - (void)layoutBillAmountLabel
 {
     billAmountLabel = UILabel.new;
-    [layout setLabel:billAmountLabel withText:@"BILL AMOUNT" fontSize:15 textColor:[UIColor lightGrayColor] isBold:YES];
+    [Layout setLabel:billAmountLabel withText:@"BILL AMOUNT" fontSize:13 textColor:[UIColor whiteColor] isBold:YES];
     [billAmountLabel sizeToFit];
     [superview addSubview:billAmountLabel];
     
     [billAmountLabel mas_makeConstraints:^(MASConstraintMaker *make){
         make.left.equalTo(billDetailView.mas_left).offset(DEVICE_WIDTH / 4 - billAmountLabel.bounds.size.width / 2);
-        make.centerY.equalTo(billDetailViewVerticalSplitOne.mas_top);
+        make.top.equalTo(billDetailView.mas_top).offset(billAmountLabelMarginTopRatio * DEVICE_HEIGHT);
     }];
 }
 
 - (void)layoutTipsLabel
 {
     tipsLabel = UILabel.new;
-    [layout setLabel:tipsLabel withText:@"TIPS" fontSize:15 textColor:[UIColor lightGrayColor] isBold:YES];
+    [Layout setLabel:tipsLabel withText:@"TIPS" fontSize:13 textColor:[UIColor whiteColor] isBold:YES];
     [tipsLabel sizeToFit];
     [superview addSubview:tipsLabel];
     
     [tipsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(billDetailView.mas_left).offset(DEVICE_WIDTH / 4 - tipsLabel.bounds.size.width / 2);
-        make.centerY.equalTo(billDetailViewVerticalSplitTwo.mas_top);
+        make.top.equalTo(billDetailView.mas_top).offset(tipsLabelMarginTopRatio * DEVICE_HEIGHT);
     }];
 }
 
 - (void)layoutPartySizeLabel
 {
     partySizeLabel = UILabel.new;
-    [layout setLabel:partySizeLabel withText:@"PARTY SIZE" fontSize:15 textColor:[UIColor lightGrayColor] isBold:YES];
+    [Layout setLabel:partySizeLabel withText:@"PARTY SIZE" fontSize:13 textColor:[UIColor whiteColor] isBold:YES];
     [partySizeLabel sizeToFit];
     [superview addSubview:partySizeLabel];
     
     [partySizeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(billDetailView.mas_right).offset(-DEVICE_WIDTH / 4 + partySizeLabel.bounds.size.width / 2);
-        make.centerY.equalTo(billDetailViewVerticalSplitOne.mas_top);
+        make.top.equalTo(billDetailView.mas_top).offset(partySizeLabelMarginTopRatio * DEVICE_HEIGHT);
     }];
 }
 
 - (void)layoutTotalLabel
 {
     totalLabel = UILabel.new;
-    [layout setLabel:totalLabel withText:@"TOTAL" fontSize:15 textColor:[UIColor lightGrayColor] isBold:YES];
+    [Layout setLabel:totalLabel withText:@"TOTAL" fontSize:13 textColor:[UIColor whiteColor] isBold:YES];
     [totalLabel sizeToFit];
     [superview addSubview:totalLabel];
     
     [totalLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(billDetailView.mas_right).offset(-DEVICE_WIDTH / 4 + totalLabel.bounds.size.width / 2);
-        make.centerY.equalTo(billDetailViewVerticalSplitTwo.mas_top);
-    }];
-}
-
-- (void)layoutBillAmountValueLabel
-{
-    billAmountValueLabel = UILabel.new;
-    [layout setLabel:billAmountValueLabel withText:@"123" fontSize:17 textColor:[UIColor blackColor] isBold:NO];
-    [billAmountValueLabel sizeToFit];
-    [superview addSubview:billAmountValueLabel];
-    
-    [billAmountValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(billDetailView.mas_left).offset(DEVICE_WIDTH / 4 - billAmountValueLabel.bounds.size.width / 2);
-        make.top.equalTo(billAmountLabel.mas_bottom).offset(billAmountValueLabelMarginTop);
-    }];
-}
-
-- (void)layoutPartySizeValueLabel
-{
-    partySizeValueLabel = UILabel.new;
-    [layout setLabel:partySizeValueLabel withText:@"123" fontSize:17 textColor:[UIColor blackColor] isBold:NO];
-    [partySizeValueLabel sizeToFit];
-    [superview addSubview:partySizeValueLabel];
-    
-    [partySizeValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(billDetailView.mas_right).offset(-DEVICE_WIDTH / 4 + partySizeValueLabel.bounds.size.width / 2);
-        make.top.equalTo(partySizeLabel.mas_bottom).offset(partySizeValueLabelMarginTop);
-    }];
-}
-
-- (void)layoutTipsValueLabel
-{
-    tipsValueLabel = UILabel.new;
-    [layout setLabel:tipsValueLabel withText:@"123" fontSize:17 textColor:[UIColor blackColor] isBold:NO];
-    [tipsValueLabel sizeToFit];
-    [superview addSubview:tipsValueLabel];
-    
-    [tipsValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(billDetailView.mas_left).offset(DEVICE_WIDTH / 4 - tipsValueLabel.bounds.size.width / 2);
-        make.top.equalTo(tipsLabel.mas_bottom).offset(tipsValueLabelMarginTop);
-    }];
-}
-
-- (void)layoutTotalValueLabel
-{
-    totalValueLabel = UILabel.new;
-    [layout setLabel:totalValueLabel withText:@"123" fontSize:17 textColor:[UIColor blackColor] isBold:NO];
-    [totalValueLabel sizeToFit];
-    [superview addSubview:totalValueLabel];
-    
-    [totalValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(billDetailView.mas_right).offset(-DEVICE_WIDTH / 4 + totalValueLabel.bounds.size.width / 2);
-        make.top.equalTo(totalLabel.mas_bottom).offset(totalValueLabelMarginTop);
+        make.centerX.equalTo(billDetailView.mas_centerX).offset(DEVICE_WIDTH / 4);
+        make.top.equalTo(billDetailView.mas_top).offset(tipsLabelMarginTopRatio * DEVICE_HEIGHT);
     }];
 }
 
 - (void)layoutPaymentForEachView
 {
     paymentForEachView = UIView.new;
-    [paymentForEachView setBackgroundColor:[UIColor colorWithRed:45/255.0 green:177/255.0 blue:137/255.0 alpha:1]];
+    [paymentForEachView setBackgroundColor:[UIColor colorWithRed:66/255.0 green:106/255.0 blue:181/255.0 alpha:1]];
     [superview addSubview:paymentForEachView];
     
     [paymentForEachView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(@DEVICE_WIDTH);
-        make.height.equalTo([NSNumber numberWithInt:paymentForEachViewHeight]);
-        make.top.equalTo(totalValueLabel.mas_bottom).offset(paymentForEachViewMarginTop);
-    }];
-}
-
-- (void)layoutPaymentForEachLabel
-{
-    paymentForEachLabel = UILabel.new;
-    [layout setLabel:paymentForEachLabel withText:@"123.97" fontSize:40 textColor:[UIColor whiteColor] isBold:YES];
-    [paymentForEachLabel sizeToFit];
-    [superview addSubview:paymentForEachLabel];
-    
-    [paymentForEachLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(paymentForEachView);
+        make.height.equalTo([NSNumber numberWithFloat:(paymentForEachViewHeightRatio * DEVICE_HEIGHT)]);
+        make.top.equalTo(billDetailView.mas_top).offset(paymentForEachViewMarginTopRatio * DEVICE_HEIGHT);
     }];
 }
 
 - (void)layoutEachLabel
 {
     eachLabel = UILabel.new;
-    [layout setLabel:eachLabel withText:@"EACH" fontSize:13 textColor:[UIColor whiteColor] isBold:YES];
+    [Layout setLabel:eachLabel withText:@"EACH" fontSize:13 textColor:[UIColor whiteColor] isBold:YES];
     [eachLabel sizeToFit];
     [superview addSubview:eachLabel];
     
     [eachLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(paymentForEachLabel.mas_top);
-        make.centerX.equalTo(paymentForEachLabel.mas_right).offset(eachLabelMarginLeft);
+        make.centerY.equalTo(paymentForEachValueLabel.mas_top);
+        make.centerX.equalTo(paymentForEachValueLabel.mas_right).offset(eachLabelMarginLeft);
     }];
 }
 
 - (void)layoutRoundButton
 {
     roundButton = UIButton.new;
-    [roundButton setBackgroundColor:[UIColor colorWithRed:106/255.0 green:147/255.0 blue:186/255.0 alpha:1]];
     [roundButton setTitle:[NSString stringWithFormat:@"%c\n%c\n%c\n%c\n%c", 'R', 'O', 'U', 'N', 'D'] forState:UIControlStateNormal];
-    [layout setLabel:roundButton.titleLabel withText:@"R\nO\nU\nN\nD\n" fontSize:11 textColor:[UIColor whiteColor] isBold:YES];
+    [Layout setLabel:roundButton.titleLabel withText:@"R\nO\nU\nN\nD\n" fontSize:11 textColor:[UIColor whiteColor] isBold:YES];
     
     roundButton.titleLabel.numberOfLines = 0;
     CGSize labelSize = [roundButton.titleLabel.text sizeWithAttributes:@{NSFontAttributeName:roundButton.titleLabel.font}];
@@ -294,9 +270,9 @@
     [superview addSubview:roundButton];
     
     [roundButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo([NSNumber numberWithInt:roundButtonWidth]);
-        make.height.equalTo([NSNumber numberWithInt:roundButtonHeight]);
-        make.top.equalTo(totalValueLabel.mas_bottom).offset(roundButtonMarginTOp);
+        make.width.equalTo([NSNumber numberWithFloat:(roundButtonWidthRatio * DEVICE_WIDTH)]);
+        make.height.equalTo([NSNumber numberWithFloat:(paymentForEachViewHeightRatio * DEVICE_HEIGHT)]);
+        make.top.equalTo(billDetailView.mas_top).offset(roundButtonMarginTopRatio * DEVICE_HEIGHT);
         make.right.equalTo(paymentForEachView.mas_right);
     }];
 }
@@ -308,12 +284,35 @@
     
     [tipsTableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(@DEVICE_WIDTH);
-        make.height.equalTo([NSNumber numberWithDouble:tipsTableViewHeightRatio * DEVICE_HEIGHT]);
-        make.top.equalTo(paymentForEachView.mas_bottom).offset(tipsTableViewMarginTop);
+        make.height.equalTo([NSNumber numberWithFloat:tipsTableViewHeightRatio * DEVICE_HEIGHT]);
+        make.top.equalTo(billDetailView.mas_top).offset(tipsTableViewMarginTopRatio * DEVICE_HEIGHT);
     }];
 }
 
-
+- (void)layoutTableHeaderView
+{
+    tableHeaderView = UIView.new;
+    [tableHeaderView setBackgroundColor:[UIColor colorWithRed:51/255.0 green:73/255.0 blue:95/255.0 alpha:1]];
+    
+    float labelHeight = tipsTableViewCellHeaderHeightRatio * DEVICE_HEIGHT / 2;
+    UILabel *tipsPercentage = [Layout setUpLabelWithFrame:CGRectMake(30, labelHeight / 2, 50, labelHeight) text:@"Rate" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
+    UILabel *tipsAmount = [Layout setUpLabelWithFrame:CGRectMake(120, labelHeight / 2, 100, labelHeight) text:@"Tips" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
+    UILabel *totalAmount = [Layout setUpLabelWithFrame:CGRectMake(260, labelHeight / 2, 100, labelHeight) text:@"Total" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
+    
+    [tableHeaderView addSubview:tipsPercentage];
+    [tableHeaderView addSubview:tipsAmount];
+    [tableHeaderView addSubview:totalAmount];
+    
+    [superview addSubview:tableHeaderView];
+    
+    [tableHeaderView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(@DEVICE_WIDTH);
+        make.height.equalTo([NSNumber numberWithFloat:tipsTableViewCellHeaderHeightRatio * DEVICE_HEIGHT]);
+        make.top.equalTo(tipsTableView.mas_top).offset(-tipsTableViewCellHeaderHeightRatio * DEVICE_HEIGHT);
+    }];
+    
+    
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -335,7 +334,11 @@
 {
     [billAmountLabel setBackgroundColor:[UIColor redColor]];
     [partySizeLabel setBackgroundColor:[UIColor redColor]];
-    [billDetailViewHorizontalSplit setBackgroundColor:[UIColor redColor]];
+    [billAmountValueLabel setBackgroundColor:[UIColor greenColor]];
+    
+//    [totalLabel setBackgroundColor:[UIColor redColor]];
+//    [totalValueLabel setBackgroundColor:[UIColor redColor]];
+//    [billDetailViewHorizontalSplit setBackgroundColor:[UIColor redColor]];
     
     [billDetailView setBackgroundColor:[UIColor blueColor]];
 }
