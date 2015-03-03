@@ -10,11 +10,10 @@
 #import "Result.h"
 #import "TipsTableViewCell.h"
 #import "LayoutSpecs.h"
-#import "ResultPageViewController.h"
 
 #define DEFAULT_TIPS_PERCENTAGE 0.10
 
-@interface TipsTableView : UITableView <UITableViewDelegate, UITableViewDataSource>
+@interface TipsTableView : UITableView <UITableViewDataSource>
 
 @property (nonatomic) float tipsPercentage;
 

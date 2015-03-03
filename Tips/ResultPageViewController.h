@@ -11,13 +11,13 @@
 #import "LayoutSpecs.h"
 #import "LayoutResultPageViewValueLabels.h"
 
-@interface ResultPageViewController : UIViewController
+@interface ResultPageViewController : UIViewController<UITableViewDelegate>
 
 @property (nonatomic, strong) LayoutResultPageViewValueLabels *layoutResultPageViewValueLabels;
 
 @property (nonatomic) float billAmount;
 @property (nonatomic) int partySize;
 
-- (void)updateValueLabels;
+- (void)updateValueLabelsOverrideExisting: (BOOL)overrideExisting;
 
 @end

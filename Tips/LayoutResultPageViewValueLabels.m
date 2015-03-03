@@ -33,86 +33,114 @@
     _paymentForEachValueLabel = paymentForEachValueLabel;
 }
 
-- (void)updateValueLabelsWithBillAmount: (float)billAmount
-                              partySize: (int)partySize
-                         tipsPercentage: (float)tipsPercentage
-                                  total: (float)total
-                               eachPays: (float)eachPays
-{
-    [self layoutBillAmountValueLabel:[NSString stringWithFormat:@"%.02f", billAmount]];
-    
-    [self layoutPartySizeValueLabel:[NSString stringWithFormat:@"%d", partySize]];
-    
-    [self layoutTipsValueLabel:[NSString stringWithFormat:@"%.02f", billAmount * tipsPercentage]];
-    
-    [self layoutTotalValueLabel:[NSString stringWithFormat:@"%.02f", total]];
-    
-    [self layoutPaymentForEachLabel:[NSString stringWithFormat:@"%.02f", eachPays]];
-}
-
 - (void)layoutBillAmountValueLabel: (NSString *)billAmountValue
+                  overrideExisting: (BOOL)overrideExisting
 {
-    _billAmountValueLabel = UILabel.new;
+    if (overrideExisting)
+    {
+        _billAmountValueLabel = UILabel.new;
+    }
+    
     [Layout setLabel:_billAmountValueLabel withText:billAmountValue fontSize:25 textColor:[UIColor whiteColor] isBold:NO];
     [_billAmountValueLabel sizeToFit];
-    [_superview addSubview:_billAmountValueLabel];
     
-    [_billAmountValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    if (overrideExisting)
+    {
+        [_superview addSubview:_billAmountValueLabel];
+    }
+    
+    [_billAmountValueLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_billDetailView.mas_left).offset(DEVICE_WIDTH / 4 - _billAmountValueLabel.bounds.size.width / 2);
         make.top.equalTo(_billDetailView.mas_top).offset(billAmountValueLabelMarginTopRatio * DEVICE_HEIGHT);
     }];
 }
 
 - (void)layoutPartySizeValueLabel: (NSString *)partySizeValue
+                 overrideExisting: (BOOL)overrideExisting
 {
-    _partySizeValueLabel = UILabel.new;
+    if (overrideExisting)
+    {
+        _partySizeValueLabel = UILabel.new;
+    }
+    
     [Layout setLabel:_partySizeValueLabel withText:partySizeValue fontSize:25 textColor:[UIColor whiteColor] isBold:NO];
     [_partySizeValueLabel sizeToFit];
-    [_superview addSubview:_partySizeValueLabel];
     
-    [_partySizeValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    if (overrideExisting)
+    {
+        [_superview addSubview:_partySizeValueLabel];
+    }
+    
+    [_partySizeValueLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(_billDetailView.mas_right).offset(-DEVICE_WIDTH / 4 + _partySizeValueLabel.bounds.size.width / 2);
         make.top.equalTo(_billDetailView.mas_top).offset(partySizeValueLabelMarginTopRatio * DEVICE_HEIGHT);
     }];
 }
 
 - (void)layoutTipsValueLabel: (NSString *)tipsValue
+            overrideExisting: (BOOL)overrideExisting
 {
-    _tipsValueLabel = UILabel.new;
+    if (overrideExisting)
+    {
+        _tipsValueLabel = UILabel.new;
+    }
+    
     [Layout setLabel:_tipsValueLabel withText:tipsValue fontSize:25 textColor:[UIColor whiteColor] isBold:NO];
     [_tipsValueLabel sizeToFit];
-    [_superview addSubview:_tipsValueLabel];
     
-    [_tipsValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    if (overrideExisting)
+    {
+        [_superview addSubview:_tipsValueLabel];
+    }
+    
+    [_tipsValueLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_billDetailView.mas_left).offset(DEVICE_WIDTH / 4 - _tipsValueLabel.bounds.size.width / 2);
         make.top.equalTo(_billDetailView.mas_top).offset(tipsValueLabelMarginTopRatio * DEVICE_HEIGHT);
     }];
 }
 
 - (void)layoutTotalValueLabel: (NSString *)totalValue
+             overrideExisting: (BOOL)overrideExisting
 {
-    _totalValueLabel = UILabel.new;
+    if (overrideExisting)
+    {
+        _totalValueLabel = UILabel.new;
+    }
+    
     [Layout setLabel:_totalValueLabel withText:totalValue fontSize:25 textColor:[UIColor whiteColor] isBold:NO];
     [_totalValueLabel sizeToFit];
-    [_superview addSubview:_totalValueLabel];
     
-    [_totalValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    if (overrideExisting)
+    {
+        [_superview addSubview:_totalValueLabel];
+    }
+    
+    [_totalValueLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(_billDetailView.mas_centerX).offset(DEVICE_WIDTH / 4);
         make.top.equalTo(_billDetailView.mas_top).offset(totalValueLabelMarginTopRatio * DEVICE_HEIGHT);
     }];
 }
 
 - (void)layoutPaymentForEachLabel: (NSString *)paymentForEach
+                 overrideExisting: (BOOL)overrideExisting
 {
-    _paymentForEachValueLabel = UILabel.new;
+    if (overrideExisting)
+    {
+        _paymentForEachValueLabel = UILabel.new;
+    }
+    
     [Layout setLabel:_paymentForEachValueLabel withText:paymentForEach fontSize:40 textColor:[UIColor whiteColor] isBold:YES];
     [_paymentForEachValueLabel sizeToFit];
-    [_superview addSubview:_paymentForEachValueLabel];
     
-    [_paymentForEachValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(_paymentForEachView.mas_centerY);
-        make.left.equalTo(_paymentForEachView.mas_left).offset(paymentForEachLabelMarginLeftRatio * DEVICE_WIDTH);
-    }];
+    if (overrideExisting)
+    {
+        [_superview addSubview:_paymentForEachValueLabel];
+        [_paymentForEachValueLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.equalTo(_paymentForEachView.mas_centerY);
+            make.left.equalTo(_paymentForEachView.mas_left).offset(paymentForEachLabelMarginLeftRatio * DEVICE_WIDTH);
+        }];
+    }
+    
 }
 
 @end

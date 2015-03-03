@@ -51,7 +51,7 @@
     _layoutResultPageViewValueLabels.superview = superview;
     
     results = [[NSMutableArray alloc] init];
-    _billAmount = 120;
+    _billAmount = 190;
     _partySize = 2;
     
     [self layoutBillDetailView];
@@ -65,6 +65,8 @@
     [self updateTipsTableView];
     [self layoutTableHeaderView];
     
+    tipsTableView.delegate = self;
+    
     [self layoutBillAmountLabel];
     [self layoutTipsLabel];
     [self layoutPartySizeLabel];
@@ -75,23 +77,28 @@
     
     [self layoutRoundButton];
     
-    [self updateValueLabels];
+    [self updateValueLabelsOverrideExisting:YES];
     [self layoutEachLabel];
 
 //    [self colorLabels];
 }
 
-- (void)updateValueLabels
+- (void)updateValueLabelsOverrideExisting: (BOOL)overrideExisting
 {
     float tipsPercentage = tipsTableView.tipsPercentage;
     float total = _billAmount * (1 + tipsPercentage);
     float eachPays = total / _partySize;
     
-    [_layoutResultPageViewValueLabels layoutBillAmountValueLabel:[NSString stringWithFormat:@"%.02f", _billAmount]];
-    [_layoutResultPageViewValueLabels layoutPartySizeValueLabel:[NSString stringWithFormat:@"%d", _partySize]];
-    [_layoutResultPageViewValueLabels layoutTipsValueLabel:[NSString stringWithFormat:@"%.02f", _billAmount * tipsPercentage]];
-    [_layoutResultPageViewValueLabels layoutTotalValueLabel:[NSString stringWithFormat:@"%.02f", total]];
-    [_layoutResultPageViewValueLabels layoutPaymentForEachLabel:[NSString stringWithFormat:@"%.02f", eachPays]];
+    [_layoutResultPageViewValueLabels layoutBillAmountValueLabel:[NSString stringWithFormat:@"%.02f", _billAmount]
+        overrideExisting:overrideExisting];
+    [_layoutResultPageViewValueLabels layoutPartySizeValueLabel:[NSString stringWithFormat:@"%d", _partySize]
+                                               overrideExisting:overrideExisting];
+    [_layoutResultPageViewValueLabels layoutTipsValueLabel:[NSString stringWithFormat:@"%.02f", _billAmount * tipsPercentage]
+                                          overrideExisting:overrideExisting];
+    [_layoutResultPageViewValueLabels layoutTotalValueLabel:[NSString stringWithFormat:@"%.02f", total]
+                                           overrideExisting:overrideExisting];
+    [_layoutResultPageViewValueLabels layoutPaymentForEachLabel:[NSString stringWithFormat:@"%.02f", eachPays]
+                                               overrideExisting:overrideExisting];
     
     billAmountValueLabel = _layoutResultPageViewValueLabels.billAmountValueLabel;
     partySizeValueLabel = _layoutResultPageViewValueLabels.partySizeValueLabel;
@@ -293,8 +300,18 @@
         make.height.equalTo([NSNumber numberWithFloat:tipsTableViewCellHeaderHeightRatio * DEVICE_HEIGHT]);
         make.top.equalTo(tipsTableView.mas_top).offset(-tipsTableViewCellHeaderHeightRatio * DEVICE_HEIGHT);
     }];
-    
-    
+}
+
+#pragma mark - table view delegate methods
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return tipsTableViewHeightRatio * DEVICE_HEIGHT * tipsTableViewCellHeightRatio;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    tipsTableView.tipsPercentage = (float)(indexPath.row + 1) / 100;
+    [self updateValueLabelsOverrideExisting:NO];
 }
 
 - (void)didReceiveMemoryWarning {

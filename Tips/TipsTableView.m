@@ -14,21 +14,18 @@ static NSString *CellIdentifier = @"CellIdentifier";
 {
     NSMutableArray *results;
     float _billAmount;
-    ResultPageViewController *resultPageViewController;
     BOOL isFirstTime;
 }
 
 - (instancetype)initWithBillAmount: (float)billAmount
 {
     self = [super init];
-    resultPageViewController = [[ResultPageViewController alloc] init];
     _billAmount = billAmount;
     _tipsPercentage = DEFAULT_TIPS_PERCENTAGE;
     isFirstTime = YES;
     results = [[NSMutableArray alloc] init];
     [self calculateTips];
     
-    self.delegate = self;
     self.dataSource = self;
     
     [self registerClass:[TipsTableViewCell class] forCellReuseIdentifier:CellIdentifier];
@@ -70,18 +67,4 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     return cell;
 }
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return tipsTableViewHeightRatio * DEVICE_HEIGHT * tipsTableViewCellHeightRatio;
-}
-
-#pragma mark - table view delegate methods
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    _tipsPercentage = indexPath.row / 100;
-        [resultPageViewController updateValueLabels];
-    
-}
-
 @end

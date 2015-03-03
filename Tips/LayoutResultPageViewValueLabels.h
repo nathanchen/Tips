@@ -32,20 +32,19 @@
                   totalValueLabel: (UILabel *)totalValueLabel
                eachPaysValueLabel: (UILabel *)paymentForEachValueLabel;
 
-- (void)layoutBillAmountValueLabel: (NSString *)billAmountValue;
+- (void)layoutBillAmountValueLabel: (NSString *)billAmountValue
+                  overrideExisting: (BOOL)overrideExisting;
 
-- (void)layoutPartySizeValueLabel: (NSString *)partySizeValue;
+- (void)layoutPartySizeValueLabel: (NSString *)partySizeValue
+                 overrideExisting: (BOOL)overrideExisting;
 
-- (void)layoutTipsValueLabel: (NSString *)tipsValue;
+- (void)layoutTipsValueLabel: (NSString *)tipsValue
+            overrideExisting: (BOOL)overrideExisting;
 
-- (void)layoutTotalValueLabel: (NSString *)totalValue;
+- (void)layoutTotalValueLabel: (NSString *)totalValue
+             overrideExisting: (BOOL)overrideExisting;
 
-- (void)layoutPaymentForEachLabel: (NSString *)paymentForEach;
-
-- (void)updateValueLabelsWithBillAmount: (float)billAmount
-                              partySize: (int)partySize
-                         tipsPercentage: (float)tipsPercentage
-                                  total: (float)total
-                               eachPays: (float)eachPays;
+- (void)layoutPaymentForEachLabel: (NSString *)paymentForEach
+                 overrideExisting: (BOOL)overrideExisting;
 
 @end
