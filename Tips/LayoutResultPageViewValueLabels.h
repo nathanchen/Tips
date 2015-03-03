@@ -24,25 +24,28 @@
 @property (nonatomic, strong) UILabel *totalValueLabel;
 @property (nonatomic, strong) UILabel *paymentForEachValueLabel;
 
-+ (LayoutResultPageViewValueLabels *)sharedInstanceWithBillAmountValueLabel: (UILabel *)billAmountValueLabel
-                                                        partySizeValueLabel: (UILabel *)partySizeValueLabel
-                                                             tipsValueLabel: (UILabel *)tipsValueLabel
-                                                            totalValueLabel: (UILabel *)totalValueLabel
-                                                         eachPaysValueLabel: (UILabel *)paymentForEachValueLabel;
++ (LayoutResultPageViewValueLabels *)sharedInstance;
 
-- (void)layoutBillAmountValueLabel: (UILabel *)billAmountValueLabel
-                         withValue: (NSString *)billAmountValue;
+- (void)setupBillAmountValueLabel: (UILabel *)billAmountValueLabel
+              partySizeValueLabel: (UILabel *)partySizeValueLabel
+                   tipsValueLabel: (UILabel *)tipsValueLabel
+                  totalValueLabel: (UILabel *)totalValueLabel
+               eachPaysValueLabel: (UILabel *)paymentForEachValueLabel;
 
-- (void)layoutPartySizeValueLabel: (UILabel *)partySizeValueLabel
-                        withValue: (NSString *)partySizeValue;
+- (void)layoutBillAmountValueLabel: (NSString *)billAmountValue;
 
-- (void)layoutTipsValueLabel: (UILabel *)tipsValueLabel
-                   withValue: (NSString *)tipsValue;
+- (void)layoutPartySizeValueLabel: (NSString *)partySizeValue;
 
-- (void)layoutTotalValueLabel: (UILabel *)totalValueLabel
-                    withValue: (NSString *)totalValue;
+- (void)layoutTipsValueLabel: (NSString *)tipsValue;
 
-- (void)layoutPaymentForEachLabel: (UILabel *)paymentForEachValueLabel
-                        withValue: (NSString *)paymentForEach;
+- (void)layoutTotalValueLabel: (NSString *)totalValue;
+
+- (void)layoutPaymentForEachLabel: (NSString *)paymentForEach;
+
+- (void)updateValueLabelsWithBillAmount: (float)billAmount
+                              partySize: (int)partySize
+                         tipsPercentage: (float)tipsPercentage
+                                  total: (float)total
+                               eachPays: (float)eachPays;
 
 @end

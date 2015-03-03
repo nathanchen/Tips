@@ -47,7 +47,7 @@
     superview = self.view;
     [superview setBackgroundColor:[UIColor colorWithRed:118/255.0 green:190/255.0 blue:242/255.0 alpha:1]];
     
-    _layoutResultPageViewValueLabels = [LayoutResultPageViewValueLabels sharedInstanceWithBillAmountValueLabel:<#(UILabel *)#> partySizeValueLabel:<#(UILabel *)#> tipsValueLabel:<#(UILabel *)#> totalValueLabel:<#(UILabel *)#> eachPaysValueLabel:<#(UILabel *)#>];
+    _layoutResultPageViewValueLabels = [LayoutResultPageViewValueLabels sharedInstance];
     _layoutResultPageViewValueLabels.superview = superview;
     
     results = [[NSMutableArray alloc] init];
@@ -75,21 +75,10 @@
     
     [self layoutRoundButton];
     
-    [self setupValueLabels];
     [self updateValueLabels];
     [self layoutEachLabel];
 
 //    [self colorLabels];
-}
-
-- (void)setupValueLabels
-{
-    billAmountValueLabel = UILabel.new;
-    partySizeValueLabel = UILabel.new;
-    tipsValueLabel = UILabel.new;
-    totalValueLabel = UILabel.new;
-    
-    paymentForEachValueLabel = UILabel.new;
 }
 
 - (void)updateValueLabels
@@ -98,23 +87,17 @@
     float total = _billAmount * (1 + tipsPercentage);
     float eachPays = total / _partySize;
     
-}
-
-- (void)updateValueLabelsWithBillAmount: (float)billAmount
-                              partySize: (int)partySize
-                         tipsPercentage: (float)tipsPercentage
-                                  total: (float)total
-                               eachPays: (float)eachPays
-{
-    [_layoutResultPageViewValueLabels layoutBillAmountValueLabel:billAmountValueLabel withValue:[NSString stringWithFormat:@"%.02f", billAmount]];
+    [_layoutResultPageViewValueLabels layoutBillAmountValueLabel:[NSString stringWithFormat:@"%.02f", _billAmount]];
+    [_layoutResultPageViewValueLabels layoutPartySizeValueLabel:[NSString stringWithFormat:@"%d", _partySize]];
+    [_layoutResultPageViewValueLabels layoutTipsValueLabel:[NSString stringWithFormat:@"%.02f", _billAmount * tipsPercentage]];
+    [_layoutResultPageViewValueLabels layoutTotalValueLabel:[NSString stringWithFormat:@"%.02f", total]];
+    [_layoutResultPageViewValueLabels layoutPaymentForEachLabel:[NSString stringWithFormat:@"%.02f", eachPays]];
     
-    [_layoutResultPageViewValueLabels layoutPartySizeValueLabel:partySizeValueLabel withValue:[NSString stringWithFormat:@"%d", partySize]];
-    
-    [_layoutResultPageViewValueLabels layoutTipsValueLabel:tipsValueLabel withValue:[NSString stringWithFormat:@"%.02f", billAmount * tipsPercentage]];
-    
-    [_layoutResultPageViewValueLabels layoutTotalValueLabel:totalValueLabel withValue:[NSString stringWithFormat:@"%.02f", total]];
-    
-    [_layoutResultPageViewValueLabels layoutPaymentForEachLabel:paymentForEachValueLabel withValue:[NSString stringWithFormat:@"%.02f", eachPays]];
+    billAmountValueLabel = _layoutResultPageViewValueLabels.billAmountValueLabel;
+    partySizeValueLabel = _layoutResultPageViewValueLabels.partySizeValueLabel;
+    tipsValueLabel = _layoutResultPageViewValueLabels.tipsValueLabel;
+    totalValueLabel = _layoutResultPageViewValueLabels.totalValueLabel;
+    paymentForEachValueLabel = _layoutResultPageViewValueLabels.paymentForEachValueLabel;
 }
 
 - (void)updateTipsTableView
