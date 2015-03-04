@@ -16,6 +16,7 @@
 @interface TipsTableView : UITableView <UITableViewDataSource>
 
 @property (nonatomic) float tipsPercentage;
+@property (nonatomic) NSMutableArray *results;
 
 - (instancetype)initWithBillAmount: (float)billAmount;
 

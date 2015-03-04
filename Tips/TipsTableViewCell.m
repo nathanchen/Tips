@@ -22,9 +22,9 @@ const float totalAmountLabelWidthRatio = 0.4;
         CGSize size = self.frame.size;
         float labelHeight = size.height / 2;
 
-        _tipsPercentage = [Layout setUpLabelWithFrame:CGRectMake(30, labelHeight, 50, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
-        _tipsAmount = [Layout setUpLabelWithFrame:CGRectMake(120, labelHeight, 100, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
-        _totalAmount = [Layout setUpLabelWithFrame:CGRectMake(260, labelHeight, 100, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
+        _tipsPercentage = [Layout setUpLabelWithFrame:CGRectMake(20, labelHeight, 80, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
+        _tipsAmount = [Layout setUpLabelWithFrame:CGRectMake(140, labelHeight, 100, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
+        _totalAmount = [Layout setUpLabelWithFrame:CGRectMake(270, labelHeight, 100, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
         
         [self.contentView addSubview:_tipsPercentage];
         [self.contentView addSubview:_tipsAmount];

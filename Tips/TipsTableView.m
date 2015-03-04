@@ -12,7 +12,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @implementation TipsTableView
 {
-    NSMutableArray *results;
     float _billAmount;
     BOOL isFirstTime;
 }
@@ -23,7 +22,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     _billAmount = billAmount;
     _tipsPercentage = DEFAULT_TIPS_PERCENTAGE;
     isFirstTime = YES;
-    results = [[NSMutableArray alloc] init];
+    _results = [[NSMutableArray alloc] init];
     [self calculateTips];
     
     self.dataSource = self;
@@ -34,12 +33,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)calculateTips
 {
-    [results removeAllObjects];
+    [_results removeAllObjects];
     Result *result;
     for (int i = 1; i <= 40; i ++)
     {
         result = [[Result alloc] initResultWithMoney:_billAmount percentage:((float)i / 100)];
-        [results addObject:result];
+        [_results addObject:result];
     }
 }
 
@@ -51,7 +50,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [results count];
+    return [_results count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -59,12 +58,20 @@ static NSString *CellIdentifier = @"CellIdentifier";
     TipsTableViewCell *cell = (TipsTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     cell.backgroundColor = [UIColor colorWithRed:51/255.0 green:73/255.0 blue:95/255.0 alpha:1];
     
-    Result *result = results[indexPath.row];
+    Result *result = _results[indexPath.row];
     
-    cell.tipsPercentage.text = [NSString stringWithFormat:@"%ld%%", (long)indexPath.row + 1];
+    cell.tipsPercentage.text = [self parseFloatForTipsPercentageValue:result.percentage];
     cell.tipsAmount.text = [NSString stringWithFormat:@"%.02f", result.tipsAmount];
     cell.totalAmount.text = [NSString stringWithFormat:@"%.02f", result.totalAmount];
     
     return cell;
+}
+
+- (NSString *)parseFloatForTipsPercentageValue: (float)rawData
+{
+    NSNumberFormatter *floatValueWithMaxTwoDecimalPlaces = [[NSNumberFormatter alloc] init];
+    [floatValueWithMaxTwoDecimalPlaces setNumberStyle:NSNumberFormatterDecimalStyle];
+    [floatValueWithMaxTwoDecimalPlaces setMaximumFractionDigits:2];
+    return [NSString stringWithFormat:@"%@%%", [floatValueWithMaxTwoDecimalPlaces stringFromNumber:[NSNumber numberWithFloat:rawData * 100]]];
 }
 @end

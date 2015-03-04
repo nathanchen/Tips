@@ -31,9 +31,10 @@
     UIButton *roundButton;
     
     TipsTableView *tipsTableView;
-    NSMutableArray *results;
     
     UIView *tableHeaderView;
+    
+    int resultsArrayPlaceholderIndex;
 }
 
 @end
@@ -50,7 +51,7 @@
     _layoutResultPageViewValueLabels = [LayoutResultPageViewValueLabels sharedInstance];
     _layoutResultPageViewValueLabels.superview = superview;
     
-    results = [[NSMutableArray alloc] init];
+    resultsArrayPlaceholderIndex = -1;
     _billAmount = 190;
     _partySize = 2;
     
@@ -62,7 +63,7 @@
     _layoutResultPageViewValueLabels.billDetailView = billDetailView;
     
     [self layoutTipsTableView];
-    [self updateTipsTableView];
+    [self updateTipsTableViewAndScrollToRoll:9];
     [self layoutTableHeaderView];
     
     tipsTableView.delegate = self;
@@ -89,8 +90,16 @@
     float total = _billAmount * (1 + tipsPercentage);
     float eachPays = total / _partySize;
     
+    [self updateValueLabelsWithTipsPercentage:tipsPercentage total:total eachPays:eachPays OverrideExistingMansoryConstraints:overrideExisting];
+}
+
+- (void)updateValueLabelsWithTipsPercentage: (float)tipsPercentage
+                                      total: (float)total
+                                   eachPays:(float)eachPays
+                           OverrideExistingMansoryConstraints:(BOOL)overrideExisting
+{
     [_layoutResultPageViewValueLabels layoutBillAmountValueLabel:[NSString stringWithFormat:@"%.02f", _billAmount]
-        overrideExisting:overrideExisting];
+                                                overrideExisting:overrideExisting];
     [_layoutResultPageViewValueLabels layoutPartySizeValueLabel:[NSString stringWithFormat:@"%d", _partySize]
                                                overrideExisting:overrideExisting];
     [_layoutResultPageViewValueLabels layoutTipsValueLabel:[NSString stringWithFormat:@"%.02f", _billAmount * tipsPercentage]
@@ -107,10 +116,12 @@
     paymentForEachValueLabel = _layoutResultPageViewValueLabels.paymentForEachValueLabel;
 }
 
-- (void)updateTipsTableView
+- (void)updateTipsTableViewAndScrollToRoll: (int)rowNum
 {
     [tipsTableView reloadData];
-    [tipsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:10 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+//    [tipsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowNum inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    
+    [tipsTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:rowNum inSection:0] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
 }
 
 - (void)layoutBillDetailView
@@ -250,6 +261,8 @@
     [roundButton setTitle:[NSString stringWithFormat:@"%c\n%c\n%c\n%c\n%c", 'R', 'O', 'U', 'N', 'D'] forState:UIControlStateNormal];
     [Layout setLabel:roundButton.titleLabel withText:@"R\nO\nU\nN\nD\n" fontSize:11 textColor:[UIColor whiteColor] isBold:YES];
     
+    [roundButton addTarget:self action:@selector(roundButtonClicked) forControlEvents:UIControlEventTouchDown];
+    
     roundButton.titleLabel.numberOfLines = 0;
     CGSize labelSize = [roundButton.titleLabel.text sizeWithAttributes:@{NSFontAttributeName:roundButton.titleLabel.font}];
     roundButton.titleLabel.frame = CGRectMake(
@@ -265,6 +278,32 @@
         make.top.equalTo(billDetailView.mas_top).offset(roundButtonMarginTopRatio * DEVICE_HEIGHT);
         make.right.equalTo(paymentForEachView.mas_right);
     }];
+}
+
+- (void)roundButtonClicked
+{
+    if (resultsArrayPlaceholderIndex != -1)
+    {
+        [tipsTableView.results removeObjectAtIndex:resultsArrayPlaceholderIndex];
+    }
+    
+    float tipsPercentage = tipsTableView.tipsPercentage;
+    float total = _billAmount * (1 + tipsPercentage);
+    float eachPays = total / _partySize;
+    
+    int roundedUpEachPays = (int)lroundf(eachPays);
+    total = (float)_partySize * roundedUpEachPays;
+    tipsPercentage = (total - _billAmount) / _billAmount;
+    
+    Result *result = [[Result alloc] initResultWithMoney:_billAmount percentage:tipsPercentage];
+    
+    resultsArrayPlaceholderIndex = ceil(tipsPercentage * 100) - 1;
+    
+    [tipsTableView.results insertObject:result atIndex:resultsArrayPlaceholderIndex];
+    
+    [self updateValueLabelsWithTipsPercentage:tipsPercentage total:total eachPays:roundedUpEachPays OverrideExistingMansoryConstraints:NO];
+    
+    [self updateTipsTableViewAndScrollToRoll:resultsArrayPlaceholderIndex];
 }
 
 - (void)layoutTipsTableView
@@ -285,9 +324,9 @@
     [tableHeaderView setBackgroundColor:[UIColor colorWithRed:51/255.0 green:73/255.0 blue:95/255.0 alpha:1]];
     
     float labelHeight = tipsTableViewCellHeaderHeightRatio * DEVICE_HEIGHT / 2;
-    UILabel *tipsPercentage = [Layout setUpLabelWithFrame:CGRectMake(30, labelHeight / 2, 50, labelHeight) text:@"Rate" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
-    UILabel *tipsAmount = [Layout setUpLabelWithFrame:CGRectMake(120, labelHeight / 2, 100, labelHeight) text:@"Tips" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
-    UILabel *totalAmount = [Layout setUpLabelWithFrame:CGRectMake(260, labelHeight / 2, 100, labelHeight) text:@"Total" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
+    UILabel *tipsPercentage = [Layout setUpLabelWithFrame:CGRectMake(20, labelHeight / 2, 80, labelHeight) text:@"Rate" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
+    UILabel *tipsAmount = [Layout setUpLabelWithFrame:CGRectMake(140, labelHeight / 2, 100, labelHeight) text:@"Tips" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
+    UILabel *totalAmount = [Layout setUpLabelWithFrame:CGRectMake(270, labelHeight / 2, 100, labelHeight) text:@"Total" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
     
     [tableHeaderView addSubview:tipsPercentage];
     [tableHeaderView addSubview:tipsAmount];
