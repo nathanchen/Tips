@@ -28,6 +28,24 @@
     }
 }
 
++ (void)setTextFiled: (UITextField *)textField
+            withText: (NSString *)text
+            fontSize: (float)fontSize
+           textColor: (UIColor *)textColor
+              isBold: (BOOL)isBold
+{
+    textField.text = text;
+    [textField setTextColor:textColor];
+    if (isBold)
+    {
+        [textField setFont:[UIFont boldSystemFontOfSize:fontSize]];
+    }
+    else
+    {
+        [textField setFont:[UIFont systemFontOfSize:fontSize]];
+    }
+}
+
 + (UILabel *)setUpLabelWithFrame: (CGRect)frame
                             text: (NSString *)textString
                        textColor: (UIColor *)color

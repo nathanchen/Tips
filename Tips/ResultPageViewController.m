@@ -10,6 +10,9 @@
 
 @interface ResultPageViewController ()
 {
+    UIView *navigationView;
+    UIButton *navigationBackButton;
+    
     UIView *superview;
     UIView *billDetailView;
     UIView *billDetailViewVerticalSplitOne;
@@ -46,15 +49,16 @@
     
     // Do any additional setup after loading the view.
     superview = self.view;
-    [superview setBackgroundColor:[UIColor colorWithRed:118/255.0 green:190/255.0 blue:242/255.0 alpha:1]];
+    [superview setBackgroundColor:LIGHT_BLUEISH_COLOR];
     
     _layoutResultPageViewValueLabels = [LayoutResultPageViewValueLabels sharedInstance];
     _layoutResultPageViewValueLabels.superview = superview;
     
     resultsArrayPlaceholderIndex = -1;
-    _billAmount = 190;
-    _partySize = 2;
+    _billAmount = 12;
+    _partySize = 1;
     
+    [self layoutNavigationView];
     [self layoutBillDetailView];
     [self layoutBillDetailViewVerticalSplitOne];
     [self layoutBillDetailViewVerticalSplitTwo];
@@ -63,10 +67,11 @@
     _layoutResultPageViewValueLabels.billDetailView = billDetailView;
     
     [self layoutTipsTableView];
-    [self updateTipsTableViewAndScrollToRoll:9];
     [self layoutTableHeaderView];
-    
     tipsTableView.delegate = self;
+    tipsTableView.backgroundColor = DARK_BLUEISH_COLOR;
+    
+    [self updateTipsTableViewAndScrollToRoll:11];
     
     [self layoutBillAmountLabel];
     [self layoutTipsLabel];
@@ -119,9 +124,41 @@
 - (void)updateTipsTableViewAndScrollToRoll: (int)rowNum
 {
     [tipsTableView reloadData];
-//    [tipsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowNum inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    
+//    [tipsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowNum inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
     
     [tipsTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:rowNum inSection:0] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+}
+
+- (void)layoutNavigationView
+{
+    navigationView = UIView.new;
+    [navigationView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.5]];
+    [superview addSubview:navigationView];
+    
+    [navigationView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(@DEVICE_WIDTH);
+        make.height.equalTo([NSNumber numberWithInt:navigationBarHeight]);
+        make.top.equalTo([NSNumber numberWithInt:0]);
+    }];
+    
+    navigationBackButton = UIButton.new;
+    [navigationBackButton setTitle:@"❮ Back" forState:UIControlStateNormal];
+    [navigationBackButton setTitleColor:DARK_BLUEISH_COLOR forState:UIControlStateNormal];
+    [navigationBackButton addTarget:self action:@selector(backButtonPressed) forControlEvents:UIControlEventTouchDown];
+    [Layout setLabel:navigationBackButton.titleLabel withText:@"❮ Back" fontSize:17 textColor:[UIColor blueColor] isBold:YES];
+    [navigationView addSubview:navigationBackButton];
+    
+    [navigationBackButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo([NSNumber numberWithInt:navigationBackButtonWidth]);
+        make.top.equalTo(navigationView.mas_top).offset(navigationBackButtonMarginTop);
+    }];
+}
+
+- (void)backButtonPressed
+{
+    QueryPageViewController *queryPageVC = [[QueryPageViewController alloc] init];
+    [self presentViewController:queryPageVC animated:YES completion:nil];
 }
 
 - (void)layoutBillDetailView
@@ -232,7 +269,7 @@
 - (void)layoutPaymentForEachView
 {
     paymentForEachView = UIView.new;
-    [paymentForEachView setBackgroundColor:[UIColor colorWithRed:66/255.0 green:106/255.0 blue:181/255.0 alpha:1]];
+    [paymentForEachView setBackgroundColor:BLUEISH_COLOR];
     [superview addSubview:paymentForEachView];
     
     [paymentForEachView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -285,6 +322,7 @@
     if (resultsArrayPlaceholderIndex != -1)
     {
         [tipsTableView.results removeObjectAtIndex:resultsArrayPlaceholderIndex];
+        resultsArrayPlaceholderIndex = -1;
     }
     
     float tipsPercentage = tipsTableView.tipsPercentage;
@@ -297,13 +335,15 @@
     
     Result *result = [[Result alloc] initResultWithMoney:_billAmount percentage:tipsPercentage];
     
-    resultsArrayPlaceholderIndex = ceil(tipsPercentage * 100) - 1;
-    
-    [tipsTableView.results insertObject:result atIndex:resultsArrayPlaceholderIndex];
+    if (((int)[tipsTableView.results indexOfObject:result]) < 0)
+    {
+        resultsArrayPlaceholderIndex = ceil(tipsPercentage * 100) - 1;
+        [tipsTableView.results insertObject:result atIndex:resultsArrayPlaceholderIndex];
+    }
     
     [self updateValueLabelsWithTipsPercentage:tipsPercentage total:total eachPays:roundedUpEachPays OverrideExistingMansoryConstraints:NO];
     
-    [self updateTipsTableViewAndScrollToRoll:resultsArrayPlaceholderIndex];
+    [self updateTipsTableViewAndScrollToRoll:(ceil(tipsPercentage * 100) - 1)];
 }
 
 - (void)layoutTipsTableView
@@ -321,12 +361,12 @@
 - (void)layoutTableHeaderView
 {
     tableHeaderView = UIView.new;
-    [tableHeaderView setBackgroundColor:[UIColor colorWithRed:51/255.0 green:73/255.0 blue:95/255.0 alpha:1]];
+    [tableHeaderView setBackgroundColor:DARK_BLUEISH_COLOR];
     
     float labelHeight = tipsTableViewCellHeaderHeightRatio * DEVICE_HEIGHT / 2;
-    UILabel *tipsPercentage = [Layout setUpLabelWithFrame:CGRectMake(20, labelHeight / 2, 80, labelHeight) text:@"Rate" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
-    UILabel *tipsAmount = [Layout setUpLabelWithFrame:CGRectMake(140, labelHeight / 2, 100, labelHeight) text:@"Tips" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
-    UILabel *totalAmount = [Layout setUpLabelWithFrame:CGRectMake(270, labelHeight / 2, 100, labelHeight) text:@"Total" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
+    UILabel *tipsPercentage = [Layout setUpLabelWithFrame:CGRectMake(tipsTableViewCell1OriginX * DEVICE_WIDTH, labelHeight / 2, tipsTableViewCell1Width * DEVICE_WIDTH, labelHeight) text:@"Rate" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
+    UILabel *tipsAmount = [Layout setUpLabelWithFrame:CGRectMake(tipsTableViewCell2OriginX * DEVICE_WIDTH, labelHeight / 2, tipsTableViewCell2Width * DEVICE_WIDTH, labelHeight) text:@"Tips" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
+    UILabel *totalAmount = [Layout setUpLabelWithFrame:CGRectMake(tipsTableViewCell3OriginX * DEVICE_WIDTH, labelHeight / 2, tipsTableViewCell3Width * DEVICE_WIDTH, labelHeight) text:@"Total" textColor:[UIColor whiteColor] textFont:15 textAlignment:NSTextAlignmentCenter isBold:YES];
     
     [tableHeaderView addSubview:tipsPercentage];
     [tableHeaderView addSubview:tipsAmount];
@@ -344,12 +384,12 @@
 #pragma mark - table view delegate methods
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return tipsTableViewHeightRatio * DEVICE_HEIGHT * tipsTableViewCellHeightRatio;
+    return DEVICE_HEIGHT * tipsTableViewCellHeightRatio;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    tipsTableView.tipsPercentage = (float)(indexPath.row + 1) / 100;
+    tipsTableView.tipsPercentage = ((Result *)tipsTableView.results[indexPath.row]).percentage;
     [self updateValueLabelsOverrideExisting:NO];
 }
 

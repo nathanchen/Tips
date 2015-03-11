@@ -2,19 +2,17 @@
 //  QueryPageViewController.h
 //  Tips
 //
-//  Created by Nate on 23/02/2015.
+//  Created by Nate on 4/03/2015.
 //  Copyright (c) 2015 Nathan CHEN. All rights reserved.
 //
 
+#import "Layout.h"
+#import "LayoutSpecs.h"
+#import "Masonry.h"
 #import "ResultPageViewController.h"
 
-#define TAG_BILL_AMOUNT_TEXT_FIELD 1
-#define TAG_PARTY_SIZE_TEXT_FIELD 2
+#define NUMBER_OF_PEOPLE_SPLIT_BILL_WITH_THRESHOLD 20
 
 @interface QueryPageViewController : UIViewController<UITextFieldDelegate>
-
-@property (weak, nonatomic) IBOutlet UITextField *billAmountTextField;
-@property (weak, nonatomic) IBOutlet UIView *selectSplitView;
-@property (weak, nonatomic) IBOutlet UIView *selectSplitViewContainer;
 
 @end

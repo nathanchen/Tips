@@ -22,4 +22,10 @@
     return self;
 }
 
+- (BOOL)isEqual:(id)anObject
+{
+    Result *temp = (Result *)anObject;
+    return (_percentage == temp.percentage && _tipsAmount == temp.tipsAmount && _totalAmount == temp.totalAmount);
+}
+
 @end

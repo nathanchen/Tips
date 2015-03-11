@@ -24,4 +24,10 @@
                    textAlignment: (NSTextAlignment)textAlignment
                           isBold: (BOOL)isBold;
 
++ (void)setTextFiled: (UITextField *)textField
+            withText: (NSString *)text
+            fontSize: (float)fontSize
+           textColor: (UIColor *)textColor
+              isBold: (BOOL)isBold;
+
 @end

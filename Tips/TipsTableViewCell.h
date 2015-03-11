@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Layout.h"
+#import "LayoutSpecs.h"
 
 @interface TipsTableViewCell : UITableViewCell
 

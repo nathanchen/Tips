@@ -17,4 +17,6 @@
 - (instancetype)initResultWithMoney:(float)money
                          percentage:(float)percentage;
 
+- (BOOL)isEqual:(id)anObject;
+
 @end

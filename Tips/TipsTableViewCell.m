@@ -22,16 +22,26 @@ const float totalAmountLabelWidthRatio = 0.4;
         CGSize size = self.frame.size;
         float labelHeight = size.height / 2;
 
-        _tipsPercentage = [Layout setUpLabelWithFrame:CGRectMake(20, labelHeight, 80, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
-        _tipsAmount = [Layout setUpLabelWithFrame:CGRectMake(140, labelHeight, 100, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
-        _totalAmount = [Layout setUpLabelWithFrame:CGRectMake(270, labelHeight, 100, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
+        _tipsPercentage = [Layout setUpLabelWithFrame:CGRectMake(tipsTableViewCell1OriginX * DEVICE_WIDTH, labelHeight, tipsTableViewCell1Width * DEVICE_WIDTH, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
+        _tipsAmount = [Layout setUpLabelWithFrame:CGRectMake(tipsTableViewCell2OriginX * DEVICE_WIDTH, labelHeight, tipsTableViewCell2Width * DEVICE_WIDTH, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
+        _totalAmount = [Layout setUpLabelWithFrame:CGRectMake(tipsTableViewCell3OriginX * DEVICE_WIDTH, labelHeight, tipsTableViewCell3Width * DEVICE_WIDTH, labelHeight) text:@"" textColor:[UIColor whiteColor] textFont:21 textAlignment:NSTextAlignmentCenter isBold:YES];
         
         [self.contentView addSubview:_tipsPercentage];
         [self.contentView addSubview:_tipsAmount];
         [self.contentView addSubview:_totalAmount];
+        
+        [self setSelectedBackgroundView:[self selectedBackgroundView]];
+
 //        [self colorLabels];
     }
     return self;
+}
+
+- (UIView *)selectedBackgroundView
+{
+    UIView *view = [[UIView alloc] init];
+    view.backgroundColor = DARK_GREENISH_COLOR;
+    return view;
 }
 
 #pragma mark - for debuging only

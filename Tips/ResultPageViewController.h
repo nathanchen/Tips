@@ -8,8 +8,8 @@
 #import "Layout.h"
 #import "Masonry.h"
 #import "TipsTableView.h"
-#import "LayoutSpecs.h"
 #import "LayoutResultPageViewValueLabels.h"
+#import "QueryPageViewController.h"
 
 @interface ResultPageViewController : UIViewController<UITableViewDelegate>
 
