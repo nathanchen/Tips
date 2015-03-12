@@ -87,10 +87,11 @@ const static float tipsTableViewCellHeightRatio = 0.22 * tipsTableViewHeightRati
 
 const static float tipsTableViewCell1OriginX = 0.05;
 const static float tipsTableViewCell1Width = 0.21;
-const static float tipsTableViewCell2OriginX = 0.37;
+const static float tipsTableViewCell2OriginX = 0.33;
 const static float tipsTableViewCell2Width = 0.27;
-const static float tipsTableViewCell3OriginX = 0.72;
-const static float tipsTableViewCell3Width = 0.27;
+const static float tipsTableViewCell3OriginX = 0.68;
+const static float tipsTableViewCell3Width = 0.31
+;
 
 //const static float tipsPercentageMarginLeftRatio =
 

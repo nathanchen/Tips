@@ -52,6 +52,17 @@
     return NO;
 }
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    // Prevent crashing undo bug – see note below.
+    if(range.length + range.location > textField.text.length)
+    {
+        return NO;
+    }
+    
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    return (newLength > NUMBER_OF_CHARACTERS_THRESHOLD) ? NO : YES;
+}
 - (void)textFieldDidEndEditing: (UITextField *)textField
 {
     if (! hasTransformed)
@@ -100,6 +111,12 @@
         make.height.equalTo([NSNumber numberWithFloat:billAmountViewHeightRatio * DEVICE_HEIGHT]);
         make.top.equalTo(self.view).offset(billAmountViewMarginTopRatio * DEVICE_HEIGHT);
         make.left.equalTo(self.view.mas_left);
+    }];
+    
+    [billAmountTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(billAmountView);
+        make.width.equalTo(billAmountView.mas_width);
+        make.height.equalTo(billAmountView.mas_height);
     }];
     
     billAmountLabel.hidden = NO;

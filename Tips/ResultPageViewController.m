@@ -55,8 +55,8 @@
     _layoutResultPageViewValueLabels.superview = superview;
     
     resultsArrayPlaceholderIndex = -1;
-    _billAmount = 12;
-    _partySize = 1;
+//    _billAmount = 12;
+//    _partySize = 1;
     
     [self layoutNavigationView];
     [self layoutBillDetailView];
@@ -70,8 +70,7 @@
     [self layoutTableHeaderView];
     tipsTableView.delegate = self;
     tipsTableView.backgroundColor = DARK_BLUEISH_COLOR;
-    
-    [self updateTipsTableViewAndScrollToRoll:11];
+
     
     [self layoutBillAmountLabel];
     [self layoutTipsLabel];
@@ -87,6 +86,11 @@
     [self layoutEachLabel];
 
 //    [self colorLabels];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [self updateTipsTableViewAndScrollToRoll:11];
 }
 
 - (void)updateValueLabelsOverrideExisting: (BOOL)overrideExisting
@@ -335,15 +339,18 @@
     
     Result *result = [[Result alloc] initResultWithMoney:_billAmount percentage:tipsPercentage];
     
+    // ceil(tipsPercentage * 100) - 1 may exceed 40 and leaves INDEX40 as blank, which cause array boundary problem
+    int tempIndex = (ceil(tipsPercentage * 100) - 1 > 39 ? 40 : ceil(tipsPercentage * 100) - 1);
+    
     if (((int)[tipsTableView.results indexOfObject:result]) < 0)
     {
-        resultsArrayPlaceholderIndex = ceil(tipsPercentage * 100) - 1;
+        resultsArrayPlaceholderIndex = tempIndex;
         [tipsTableView.results insertObject:result atIndex:resultsArrayPlaceholderIndex];
     }
     
     [self updateValueLabelsWithTipsPercentage:tipsPercentage total:total eachPays:roundedUpEachPays OverrideExistingMansoryConstraints:NO];
     
-    [self updateTipsTableViewAndScrollToRoll:(ceil(tipsPercentage * 100) - 1)];
+    [self updateTipsTableViewAndScrollToRoll:tempIndex];
 }
 
 - (void)layoutTipsTableView

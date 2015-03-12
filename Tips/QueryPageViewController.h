@@ -12,6 +12,7 @@
 #import "ResultPageViewController.h"
 
 #define NUMBER_OF_PEOPLE_SPLIT_BILL_WITH_THRESHOLD 20
+#define NUMBER_OF_CHARACTERS_THRESHOLD 7
 
 @interface QueryPageViewController : UIViewController<UITextFieldDelegate>
 
